@@ -1064,11 +1064,154 @@
     </div>
 
 
+    <!-- Since require() is unavailble in browser engine, requirejs script is needed to run the code between script tags  -->
 
 
+    <script>
+
+        function Length(arr) {
+            for (let i = 0; i < Infinity; i++){
+                if (arr[i] == undefined) {
+                    return i;
+                }
+            }
+        }
+
+
+
+        function test() {
+            console.log("Connecting to functionModule is success");
+        }
+
+
+        function addPlayerDataToMongo(){
+            let MongoClient = require('mongodb').MongoClient;
+            let url = "mongodb+srv://MgThuRein:password2025@cluster0.9q9o8k2.mongodb.net/";
+
+            MongoClient.connect(url, function(err, db) {
+                if (err) throw err;
+                console.log("database connected");
+            
+            let inputNum = document.querySelector('#inputNum').value;
+            let inputName = document.querySelector('#name').value;
+            let inputPhNo = document.querySelector('#Ph-No').value;
+
+            let numberCol = db.db("GuestNum").collection("number");
+            let participantsCol = db.db("GuestNum").collection("participants");
+
+            let addNum = {  _id : inputNum,
+                            number : inputNum};
+            let addData = { _id : inputNum,
+                            name : inputName,
+                            PhoneNumber : inputPhNo,
+                            number : inputNum}
+                
+            numberCol.insertOne(addNum, function(err, res) {
+                if (err) throw err;
+                console.log("1 number is inserted");
+                db.close();
+            });
+
+            participantsCol.insertOne(addData, function(err, res) {
+                if (err) throw err;
+                console.log("1 participant data is inserted");
+                db.close();
+            });
+        });
+        };
+
+
+
+        function checkAvailable(){
+            let MongoClient = require('mongodb').MongoClient;
+            let url = "mongodb+srv://MgThuRein:password2025@cluster0.9q9o8k2.mongodb.net/";
+
+            MongoClient.connect(url, function(err, db) {
+                if (err) throw err;
+                let dbo = db.db("GuestNum");
+                
+                dbo.collection("participants").find({}).toArray(function(err, result) {
+                    if (err) throw err;
+
+                    let inputNum = document.querySelector('#inputNam').value;
+                    for (let i = 0; i < Length(result); i++){
+                        if(inputNum == result[i].number) return true;
+                        break;
+                    }  
+                    
+                    db.close();
+                    
+                });
+            });
+
+        }
+
+
+
+
+        // displaying and givin id and value to Number
+        for(let i = 0; i < 1000; i++) {
+            let element = document.querySelector(`#num${i+1}`);
+            element.className = "num";
+            if(i < 10) {
+                element.textContent = "00" + i;
+            } else if (i < 100){
+                element.textContent = "0" + i; 
+            } else {
+            element.textContent = i;
+            }
+        }
+
+
+
+        // changing background of taken number
+        let MongoClient = require('mongodb').MongoClient;
+        let url = "mongodb+srv://MgThuRein:password2025@cluster0.9q9o8k2.mongodb.net/";
+
+        MongoClient.connect(url, function(err, db) {
+            if (err) throw err;
+            console.log("database connected");
+
+            dbo.collection("number").find({}).toArray(function(err, result) {
+            if (err) throw err;
+
+            
+            for (let i = 0; i < 1000; i ++){
+                for (let j = 0; j < mod.Length(result); j++){
+                    if(i == result[i].number){
+                        let changeBG = document.querySelector(`#num${i+1}`);
+                        console.log(changeBG);
+                        changeBG.style.backgroundColor = "red";
+                    }
+                }
+            }  
+
+
+                db.close();
+            })
+
+        });
+
+
+
+        document.querySelector("#add").addEventListener( "click", checkNum());
+
+        function checkNum(){
+            
+            if( !((inputNum%2) >= 0) ) {
+                alert("Please enter only 'Number'")
+            } else if(inputNum > 1000 || inputNum < 0) {
+                alert("Please enter number only form '0'(zero) to '999'");
+            } else {
+                checkAvailable();
+                addPlayerDataToMongo();
+            }
+
+        }
+
+
+    </script>
     
-    <script src="JS/style.js"></script>
-    <script src="JS/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     
 </body>
